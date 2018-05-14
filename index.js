@@ -377,7 +377,6 @@ app.post('/lovegos/new-conversation', (req, res)=>{
 //MESSAGES
 //Créer une nouvelle conversation
 app.post('/lovegos/message', (req, res)=>{
-    console.log('Here is OK finally...');
     let submitedToken = req.get('Auth-token');
 
     var idConversation = req.body.idConversation;
