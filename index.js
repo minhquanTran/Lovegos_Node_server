@@ -54,7 +54,6 @@ app.post('/lovegos/login', function(req, res){
     
 });
 
-
 //Profil d'un utilisateur
 app.get('/lovegos/profil/:id', function(req, res){
     var thisId = req.params.id;
@@ -165,7 +164,6 @@ app.post('/lovegos/love', (req, res)=>{
 
 //Reception de tous les loves reçus par l'utilisateur
 app.get('/lovegos/loves', (req, res)=>{
-    console.log('Here is OK...');
     let submitedToken = req.get('Auth-token');
 
     //récupérer les loves reçus dans la base 
@@ -229,6 +227,137 @@ app.get('/lovegos/loves', (req, res)=>{
     }
 });
 
+//Reception des loves non vus de l'utilisateur
+app.get('/lovegos/loves-non-vus', (req, res)=>{
+    let submitedToken = req.get('Auth-token');
+
+    //récupérer les loves non-vus dans la base 
+
+    //examples
+    let nonSeenLoves = [
+        {
+            id : 135,
+            dateHeure : new Date('May 14, 2018 15:02:00'),
+            vu : false,
+            expediteur : {
+                id: 7,
+                dateNaissance: new Date('October 30, 2003 08:32:00'), // objet Date js
+                geoLoc: {
+                    lat: 232323,
+                    long: 454443
+                },
+                photo: "URL encore d'un autre image", // URL de l'image
+                nom: "Liu",
+                prenom: "Yan",
+                motifs: ["amour","chatting"],
+                //ce qu'il cherche sur lovegos (amour, sexe...)
+                trancheAgeRecherche: [24,30],
+                genresRecherches: ["homme"],
+                presentation: "chow chow I am looking for U ;)",
+                // Texte de présentation..
+                genre: "femme"
+            }
+        }
+    ];
+    //vérifier si le token est bon
+    if (submitedToken == rightToken) {
+        res.json(nonSeenLoves);
+    } else {
+        res.json({
+            "message" : "Token non valid!"
+        });
+    }
+});
+
+//CONVERSATIONS
+//Liste des conversations
+app.get('/lovegos/conversations', (req, res)=>{
+    let submitedToken = req.get('Auth-token');
+
+    //récupérer les conversations de l'user triées par date décroissante dans la base 
+
+    //examples
+    let conversations = [
+        {
+            id : 117,
+            titre : "Bonne anniversaire!"
+        },
+        {
+            id : 89,
+            titre : "Fête de la musique^^"
+        },
+        {
+            id : 24,
+            titre : "Hello chou-chou..."
+        }
+    ];
+    //vérifier si le token est bon
+    if (submitedToken == rightToken) {
+        res.json(conversations);
+    } else {
+        res.json({
+            "message" : "Token non valid!"
+        });
+    }
+});
+
+//Charger une conversation
+app.get('/lovegos/conversation/:id', (req, res)=>{
+    console.log('Here is OK too...');
+    var thisId = req.params.id;
+    let submitedToken = req.get('Auth-token');
+
+    //récupérer la conversation avec le bon ID dans la base 
+
+    //example
+    let conversation = {
+        id : thisId,
+        titre : "Bonne anniversaire!",
+        messages : [
+            {
+                contenu: "Bonne anniversaire ma chou-chou",
+                dateEnvoi: new Date('Juin 22, 2015 14:14:14'),
+                dateLecture: new Date('Juin 22, 2015 22:22:22'),
+                auteur: {
+                    nom: "Bond",
+                    prenom: "James",
+                    photo: "une image URL"
+                }
+            },
+            {
+                contenu: "Merci mon bogos <3",
+                dateEnvoi: new Date('Juin 22, 2015 22:23:24'),
+                dateLecture: new Date('Juin 22, 2015 23:23:23'),
+                auteur: {
+                    nom: "Diaz",
+                    prenom: "Cameron",
+                    photo: "une belle image URL"
+                }
+        }],
+        participants : [
+            {
+                nom: "Bond",
+                prenom: "James",
+                photo: "une image URL"
+            },
+            {
+                nom: "Diaz",
+                prenom: "Cameron",
+                photo: "une belle image URL"
+        }]
+    };
+
+    //vérifier si le token est bon
+    if (submitedToken == rightToken) {
+        res.json(conversation);
+    } else {
+        res.json({
+            "message" : "Token non valid!"
+        });
+    }
+});
+
+//MAIN APP
 app.use('/lovegos', router);
 
 app.listen(3000, ()=>{
