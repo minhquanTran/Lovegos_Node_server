@@ -9,7 +9,7 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-let rightToken = "tempo_token"; // à modifier
+let rightToken = "tempo_token"; // à modifier : le serveur renvoie un jeton de session
 
 // router.get('/', (req, res)=>{
 //     console.log('Authentification Page shows...');
@@ -26,7 +26,7 @@ app.post('/lovegos/login', function(req, res){
         res.json({
             "message" : "Bienvenu au Lovegos ",
             status :"OK",
-            token: rightToken, // le serveur renvoie un jeton de session
+            token: rightToken,
             utilisateur : {
                 id: "1",
                 dateNaissance: new Date('December 17, 1995 03:24:00'), // objet Date js
@@ -59,8 +59,9 @@ app.post('/lovegos/login', function(req, res){
 //Profil d-un utilisateur
 app.get('/lovegos/profil/:id', function(req, res){
     var thisId = req.params.id;
-
+    console.log(thisId);
     let submitedToken = req.get('Auth-token');
+    console.log(submitedToken);
     //vérifier si le token est bon
     if (submitedToken == rightToken) {
         
@@ -89,6 +90,10 @@ app.get('/lovegos/profil/:id', function(req, res){
         res.json({
             "message" : "Bienvenu au Lovegos ",
             utilisateur : searchedUser
+        });
+    } else {
+        res.json({
+            "message" : "Token non valide!"
         });
     }
     
