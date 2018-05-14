@@ -21,7 +21,7 @@ app.post('/lovegos/login', function(req, res){
     var login = req.body.login;
     var pass = req.body.password;
     if ('toto' == login && 'toto' == pass) {
-        //res.send('Bienvenu au Lovegos ' + login);
+        //exemple
         res.json({
             "message" : "Bienvenu au Lovegos ",
             status :"OK",
@@ -303,7 +303,6 @@ app.get('/lovegos/conversations', (req, res)=>{
 
 //Charger une conversation
 app.get('/lovegos/conversation/:id', (req, res)=>{
-    console.log('Here is OK too...');
     var thisId = req.params.id;
     let submitedToken = req.get('Auth-token');
 
@@ -350,6 +349,45 @@ app.get('/lovegos/conversation/:id', (req, res)=>{
     //vérifier si le token est bon
     if (submitedToken == rightToken) {
         res.json(conversation);
+    } else {
+        res.json({
+            "message" : "Token non valid!"
+        });
+    }
+});
+
+//Créer une nouvelle conversation
+app.post('/lovegos/new-conversation', (req, res)=>{
+    let submitedToken = req.get('Auth-token');
+
+    //var participantList = req.body.participants;
+   
+    //vérifier si le token est bon
+    if (submitedToken == rightToken) {
+        res.json({
+            success : "OK"
+        });
+    } else {
+        res.json({
+            "message" : "Token non valid!"
+        });
+    }
+});
+
+//MESSAGES
+//Créer une nouvelle conversation
+app.post('/lovegos/message', (req, res)=>{
+    console.log('Here is OK finally...');
+    let submitedToken = req.get('Auth-token');
+
+    var idConversation = req.body.idConversation;
+    var message = req.body.message;
+
+    //vérifier si le token est bon
+    if (submitedToken == rightToken) {
+        res.json({
+            success : "OK"
+        });
     } else {
         res.json({
             "message" : "Token non valid!"
