@@ -18,7 +18,6 @@ let rightToken = "tempo_token"; // à modifier : le serveur renvoie un jeton de 
 
 //authentification
 app.post('/lovegos/login', function(req, res){
-    console.log('Login username : ' + req.body.userName);
     var login = req.body.login;
     var pass = req.body.password;
     if ('toto' == login && 'toto' == pass) {
@@ -56,19 +55,18 @@ app.post('/lovegos/login', function(req, res){
 });
 
 
-//Profil d-un utilisateur
+//Profil d'un utilisateur
 app.get('/lovegos/profil/:id', function(req, res){
     var thisId = req.params.id;
-    console.log(thisId);
     let submitedToken = req.get('Auth-token');
-    console.log(submitedToken);
+
     //vérifier si le token est bon
     if (submitedToken == rightToken) {
         
         //chercher le bon utilisateur en correspondance à l'ID dans la base de donnée Mongo
 
         //l'instancier dans une variable
-        var searchedUser = {
+        let searchedUser = {
             id: thisId,
             dateNaissance: new Date('December 22, 1999 09:44:00'), // objet Date js
             geoLoc: {
@@ -88,21 +86,148 @@ app.get('/lovegos/profil/:id', function(req, res){
         };
 
         res.json({
-            "message" : "Bienvenu au Lovegos ",
+            "message" : "Profil d'utilisateur fonctionne...",
             utilisateur : searchedUser
         });
     } else {
         res.json({
-            "message" : "Token non valide!"
+            "message" : "Token non valid!"
         });
     }
     
 });
 
-// Handling 404 errors
-// app.use('*', (req, res)=>{
-//     res.status(404).send('Error 404 : unknown address...');
-// });
+//Profils recommandés
+app.get('/lovegos/recommandations', function(req, res){
+    let submitedToken = req.get('Auth-token');
+
+    //vérifier si le token est bon
+    if (submitedToken == rightToken) {
+        
+        //récupérer les récommandations des profils dans la base 
+
+        //examples
+        let searchedUser = {
+            id: 4,
+            dateNaissance: new Date('December 22, 1999 09:44:00'), // objet Date js
+            geoLoc: {
+                lat: 333333,
+                long: 666666
+            },
+            photo: "URL d'un autre image", // URL de l'image
+            nom: "Vanes",
+            prenom: "Emilie",
+            motifs: ["amour","friend"],
+            //ce qu'il cherche sur lovegos (amour, sexe...)
+            trancheAgeRecherche: [22,35],
+            genresRecherches: ["homme"],
+            presentation: "as a bird flys to find its half...",
+            // Texte de présentation..
+            genre: "femme"
+        };
+        let suggestedProfils = [
+            searchedUser, searchedUser, searchedUser
+        ]
+
+        res.json({
+            "message" : "Profils récommandés fonctionnent... ",
+            utilisateurs : suggestedProfils
+        });
+    } else {
+        res.json({
+            "message" : "Token non valid!"
+        });
+    }
+});
+
+//LOVE
+//Envoi d'un love
+app.post('/lovegos/love', (req, res)=>{
+    
+    var dateHeure = req.body.dateHeure; //quell type de Date
+    var vu = req.body.vu;
+    var idExp = req.body.idExp;
+    var idDest = req.body.idDest;
+
+    let submitedToken = req.get('Auth-token');
+
+    //vérifier si le token est bon
+    if (submitedToken == rightToken) {
+        res.json({
+            success : "OK"
+        });
+    } else {
+        res.json({
+            "message" : "Token non valid!"
+        });
+    }
+});
+
+//Reception de tous les loves reçus par l'utilisateur
+app.get('/lovegos/loves', (req, res)=>{
+    console.log('Here is OK...');
+    let submitedToken = req.get('Auth-token');
+
+    //récupérer les loves reçus dans la base 
+
+    //examples
+    let receivedLoves = [
+        {
+            id : 25,
+            dateHeure : new Date('December 13, 2017 19:22:00'),
+            vu : true,
+            expediteur : {
+                id: 4,
+                dateNaissance: new Date('December 22, 1999 09:44:00'), // objet Date js
+                geoLoc: {
+                    lat: 333333,
+                    long: 666666
+                },
+                photo: "URL d'un autre image", // URL de l'image
+                nom: "Vanes",
+                prenom: "Emilie",
+                motifs: ["amour","friend"],
+                //ce qu'il cherche sur lovegos (amour, sexe...)
+                trancheAgeRecherche: [22,35],
+                genresRecherches: ["homme"],
+                presentation: "as a bird flys to find its half...",
+                // Texte de présentation..
+                genre: "femme"
+            }
+        },
+        {
+            id : 135,
+            dateHeure : new Date('May 14, 2018 15:02:00'),
+            vu : false,
+            expediteur : {
+                id: 7,
+                dateNaissance: new Date('October 30, 2003 08:32:00'), // objet Date js
+                geoLoc: {
+                    lat: 232323,
+                    long: 454443
+                },
+                photo: "URL encore d'un autre image", // URL de l'image
+                nom: "Liu",
+                prenom: "Yan",
+                motifs: ["amour","chatting"],
+                //ce qu'il cherche sur lovegos (amour, sexe...)
+                trancheAgeRecherche: [24,30],
+                genresRecherches: ["homme"],
+                presentation: "chow chow I am looking for U ;)",
+                // Texte de présentation..
+                genre: "femme"
+            }
+        }
+    ];
+    //vérifier si le token est bon
+    if (submitedToken == rightToken) {
+        res.json(receivedLoves);
+    } else {
+        res.json({
+            "message" : "Token non valid!"
+        });
+    }
+});
 
 app.use('/lovegos', router);
 
